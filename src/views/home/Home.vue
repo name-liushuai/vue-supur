@@ -4,6 +4,13 @@
     <nav-bar class="home-nav">
       <div slot="center">购 物 街</div>
     </nav-bar>
+    <tab-constrol
+      :title="['流 行','新 款','精 选']"
+      class="tab-constrol"
+      ref="tabconstrol1"
+      @itemclick="itemclick"
+      v-show="istabshow"
+    ></tab-constrol>
     <scroll
       class="content"
       ref="scroll"
@@ -12,10 +19,10 @@
       @scroll="isshowclick"
       @pullingUp="loadmore"
     >
-      <home-swiper :banner="banner"></home-swiper>
+      <home-swiper :banner="banner" @swiperimgload="swiperimgload"></home-swiper>
       <home-recommend :recommend="recommend"></home-recommend>
       <feature-view></feature-view>
-      <tab-constrol :title="['流 行','新 款','精 选']" class="tab-constrol" @itemclick="itemclick"></tab-constrol>
+      <tab-constrol :title="['流 行','新 款','精 选']" ref="tabconstrol2" @itemclick="itemclick"></tab-constrol>
       <goods-list :goods="goods[aa].list"></goods-list>
     </scroll>
     <back-top @click.native="topclick" v-show="isshowtop"></back-top>
@@ -57,17 +64,39 @@ export default {
         sell: { page: 0, list: [] }
       },
       aa: "pop",
-      isshowtop: false
+      isshowtop: false,
+      tabConstrolTop: 0,
+      istabshow: false
     };
   },
   created() {
     this.getDatas();
 
+    //请求商品数据
     this.getGoods("pop");
     this.getGoods("new");
     this.getGoods("sell");
   },
+  mounted() {
+    //监听item图片加载完成
+    const refresh = this.debounce(this.$refs.scroll.refresh, 50);
+    this.$bus.$on("imgload", () => {
+      refresh();
+    });
+  },
   methods: {
+    //防抖函数
+    debounce(func, delay) {
+      let timer = null;
+      return function(...args) {
+        if (timer) {
+          clearTimeout(timer);
+        }
+        timer = setTimeout(() => {
+          func.apply(this, args);
+        }, delay);
+      };
+    },
     /**
      * 事件监听相关的方法
      */
@@ -83,20 +112,26 @@ export default {
         case 2:
           this.aa = "sell";
       }
+      this.$refs.tabconstrol1.aaa = index;
+      this.$refs.tabconstrol2.aaa = index;
     },
     topclick() {
       this.$refs.scroll.scrollTo(0, 0, 600);
     },
     isshowclick(position) {
+      //小top显示隐藏
       this.isshowtop = -position.y > 900;
+      //tab-constorl显示隐藏
+      this.istabshow = -position.y > this.tabConstrolTop;
     },
     loadmore() {
-      this.getGoods(this.aa)
-      this.$refs.scroll.scroll.refresh()
+      this.getGoods(this.aa);
+      this.$refs.scroll.scroll.refresh();
     },
-    finishPullUp(){
-      this.scroll.finishPullUp()
+    swiperimgload() {
+      this.tabConstrolTop = this.$refs.tabconstrol2.$el.offsetTop;
     },
+
     /**
      * 网络请求相关的方法
      */
@@ -114,6 +149,9 @@ export default {
       getGoods(type, page).then(res => {
         this.goods[type].list.push(...res.data.list);
         this.goods[type].page += 1;
+
+        //完成上拉加载更多
+        this.$refs.scroll.finishPullUp();
       });
     }
   }
@@ -123,25 +161,22 @@ export default {
 <style  scoped>
 #home {
   position: relative;
-  padding-top: 44px;
   height: 100vh;
 }
-#home .home-nav {
-  position: fixed;
-  left: 0;
-  right: 0;
-  top: 0;
-  z-index: 9;
-}
+
 .home-nav {
   background: var(--color-tint);
   color: aliceblue;
+  /* position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  z-index: 10; */
 }
-/* .tab-constrol {
-  position: sticky;
-  top: 44px;
+.tab-constrol {
+  position: relative;
   z-index: 9;
-} */
+}
 
 .content {
   overflow: hidden;
