@@ -1,4 +1,5 @@
 <template>
+<!-- 轮播图的封装 -->
   <div class="slide">
     <slot></slot>
   </div>

@@ -1,3 +1,4 @@
+// home页面的数据请求封装
 import {  
   request
 } from 'network/request'
@@ -13,3 +14,12 @@ export function getDatas(){
   // })
   
 }
+export function getGoods(type,page){
+  return request({
+     url: '/home/data',
+     params:{
+       type,
+       page
+     }
+    })
+  }

@@ -8,7 +8,8 @@ const Profile = () => import('views/profile/Profile')
 
 Vue.use(VueRouter) 
 
-const routes = [{
+const routes = [
+  {
     path: '',
     redirect: '/home'
   },
@@ -33,8 +34,9 @@ const routes = [{
 
 const router = new VueRouter({
   mode: 'history',
+  // mode:'hash',
 
   routes
 })
-
+  
 export default router

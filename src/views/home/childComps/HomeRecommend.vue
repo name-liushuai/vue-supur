@@ -1,4 +1,5 @@
 <template>
+<!-- home组件 轮播图下导航栏 -->
   <div class="nav">
     <div v-for="(i,index) in recommend" :key="index" class="nav-div">
       <a :href="i.link">
@@ -28,18 +29,18 @@ export default {
 .nav{
   display: flex;
   text-align: center;
-  padding: 10px 0 30px;
-  border-bottom: 10px solid #eee;
-  font-size: 12px;
+  padding: .625rem 0 1.875rem;
+  border-bottom: .625rem solid #eee;
+  font-size: .75rem;
 }
 .nav-div{
   flex: 1;
   
 }
  .nav-div img{
-    height: 70px;
-    width: 70px;
-    margin-bottom: 8px;
+    height: 4.375rem;
+    width: 4.375rem;
+    margin-bottom: .5rem;
   }
 
 </style>

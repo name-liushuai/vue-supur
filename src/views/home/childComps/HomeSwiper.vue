@@ -1,4 +1,5 @@
 <template>
+<!-- home组件轮播图 -->
   <div>
     <swiper>
       <swiper-item v-for="(i,index) in banner" :key="index">

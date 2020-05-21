@@ -1,0 +1,20 @@
+<template>
+<!-- home页面本周流行 -->
+  <div class="feature">
+    <a href="https://act.mogujie.com/zzlx67">
+      <img src="~assets/img/home/recommend_bg.jpg" >
+    </a>
+  </div>
+</template>
+
+<script>
+export default {
+  name: "FeatureView"
+}
+</script>
+
+<style  >
+.feature a img {
+  width: 100%;
+}
+</style>
